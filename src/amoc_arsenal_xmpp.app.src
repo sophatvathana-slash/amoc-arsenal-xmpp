@@ -9,7 +9,8 @@
     escalus,
     mnesia,
     ssl,
-    jiffy
+    jiffy,
+    jwt
    ]},
   {env, [
    {predefined_metrics, [{times, connection},

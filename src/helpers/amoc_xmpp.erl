@@ -39,6 +39,7 @@ connect_or_exit(Spec) ->
     try_to_connect_n_times_or_exit(NewSpec, N).
 
 try_to_connect_n_times_or_exit(Spec, N) when N>0 ->
+    logger:error("Spec test check ~p", [Spec]),
     {ConnectionTime, ConnectionResult} = timer:tc(escalus_connection, start, [Spec]),
     case ConnectionResult of
         {ok, _, _} = Result ->
@@ -46,8 +47,8 @@ try_to_connect_n_times_or_exit(Spec, N) when N>0 ->
             amoc_metrics:update_time(connection, ConnectionTime),
             Result;
         Error ->
-            ?LOG_ERROR("Could not connect user = ~p, reason = ~p, retries_left = ~p",
-                       [Spec, Error, N-1]),
+            logger:error("Could not connect user = ~p, reason = ~p, retries_left = ~p", 
+            [Spec, Error, N-1]),
             case N of
                 1 ->
                     amoc_metrics:update_counter(connection_failures),
@@ -100,8 +101,9 @@ make_user(Id, Props) ->
 
 -spec default_user_spec(binary(), binary()) -> escalus_users:user_spec().
 default_user_spec(ProfileId, Password) ->
+    Xmpp_domain = os:getenv("AMOC_XMPP_DOMAIN", <<"prod.xmpp.hiapp-chat.com">>),
     [{username, ProfileId},
-     {server, <<"localhost">>},
+     {server, Xmpp_domain},
      {password, Password},
      {carbons, false},
      {stream_management, false},

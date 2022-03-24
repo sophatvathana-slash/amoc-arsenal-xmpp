@@ -27,8 +27,8 @@ services:
       - amoc-test-network
     environment:
       AMOC_GRAPHITE_HOST: '"${GRAPHITE_HOST:-host.docker.internal}"'
-      AMOC_XMPP_DOMAIN: "prod.xmpp.hiapp-chat.com"
-      XMPP_JWT_SECRET: "3oa8uXa1mmVr8N2MM3bx96"
+      AMOC_XMPP_DOMAIN: "xmpp-domian"
+      XMPP_JWT_SECRET: "JWT Secret"
   amoc-worker:
     image: "${AMOC_IMAGE:-amoc-arsenal-xmpp}"
     depends_on: 
@@ -42,9 +42,9 @@ services:
     environment:
       AMOC_GRAPHITE_HOST: '"${GRAPHITE_HOST:-host.docker.internal}"'
       AMOC_NODES: "['amoc_arsenal_xmpp@amoc-master']"
-      AMOC_XMPP_SERVERS: '[[{host, <<"108.136.80.73">>}]]'
-      AMOC_XMPP_DOMAIN: "prod.xmpp.hiapp-chat.com"
-      XMPP_JWT_SECRET: "3oa8uXa1mmVr8N2MM3bx96"
+      AMOC_XMPP_SERVERS: '[[{host, <<"xmpp-ip">>}]]'
+      AMOC_XMPP_DOMAIN: "xmpp-domian"
+      XMPP_JWT_SECRET: "JWT Secret"
     entrypoint: [ "sh", "-c", 'AMOC_GRAPHITE_PREFIX="\"amoc.$${HOSTNAME}\"" /sbin/my_init']
 networks:
   amoc-test-network:

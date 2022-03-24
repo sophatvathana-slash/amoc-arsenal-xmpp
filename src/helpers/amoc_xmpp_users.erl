@@ -7,7 +7,8 @@
 
 -spec make_jid(amoc_scenario:user_id()) -> binary().
 make_jid(Id) ->
-    make_jid(Id, <<"localhost">>).
+    Xmpp_domain =  os:getenv("AMOC_XMPP_DOMAIN"),
+    make_jid(Id, <<Xmpp_domain>>).
 
 -spec make_jid(amoc_scenario:user_id(), binary()) -> binary().
 make_jid(Id, Host) ->
@@ -21,5 +22,15 @@ username(Id) ->
 
 -spec password(amoc_scenario:user_id()) -> binary().
 password(Id) ->
+    % BinInt = integer_to_binary(Id),
     BinInt = integer_to_binary(Id),
-    <<"password_", BinInt/binary>>.
+    Claims = [
+        {id, BinInt},
+        {user, <<"user_", BinInt/binary>>},
+        {role, <<"user">>}
+    ],
+    ExpirationSeconds = 86400,
+    JwtSecret = os:getenv("XMPP_JWT_SECRET"),
+    Key = <<JwtSecret>>,
+    {ok, Token} = jwt:encode(<<"HS256">>, Claims, ExpirationSeconds, Key),
+    Token.
